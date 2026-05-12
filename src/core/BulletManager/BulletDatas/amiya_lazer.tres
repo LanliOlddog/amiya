@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BulletData" load_steps=3 format=3 uid="uid://bstudu5ta8pwf"]
+
+[ext_resource type="Script" uid="uid://dofiqn2m2pf2l" path="res://src/resources/BulletData.gd" id="1_fkpc4"]
+[ext_resource type="PackedScene" uid="uid://dujtvs0uts7ly" path="res://src/core/BulletManager/BulletScenes/amiya_lazer.tscn" id="1_ja86v"]
+
+[resource]
+script = ExtResource("1_fkpc4")
+name = "amiya_lazer"
+scene = ExtResource("1_ja86v")
+metadata/_custom_type_script = "uid://dofiqn2m2pf2l"

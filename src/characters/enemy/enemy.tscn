@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://oo2ie4k3inj2"]
+
+[ext_resource type="Script" uid="uid://c3y0ubao88wmp" path="res://src/characters/enemy/Enemy.gd" id="1_a8mng"]
+
+[sub_resource type="GDScript" id="GDScript_byhr8"]
+script/source = "extends Node
+"
+
+[node name="Enemy" type="Area2D"]
+script = ExtResource("1_a8mng")
+
+[node name="canvas" type="Node2D" parent="."]
+
+[node name="Sprite" type="AnimatedSprite2D" parent="canvas"]
+
+[node name="HPBar" type="TextureProgressBar" parent="canvas"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Timer" type="Node" parent="."]
+
+[node name="Launcher" type="Node2D" parent="."]
+script = SubResource("GDScript_byhr8")

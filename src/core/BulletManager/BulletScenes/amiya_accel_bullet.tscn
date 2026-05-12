@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://dm1fdcpp7q8ee"]
+
+[ext_resource type="Script" uid="uid://dxq85fb1ga070" path="res://src/core/BulletManager/scripts/amiya_accel_bullet.gd" id="1_xvy0u"]
+[ext_resource type="Texture2D" uid="uid://cdfykpohlrqd6" path="res://assets/bullets/tile_0008.png" id="2_y1i6g"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_38l04"]
+radius = 8.0
+
+[node name="axebullet" type="Area2D"]
+collision_layer = 16
+collision_mask = 3
+script = ExtResource("1_xvy0u")
+pool_name = "amiya_accel"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("2_y1i6g")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(2, 2)
+shape = SubResource("CircleShape2D_38l04")
+
+[node name="VersionShape" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(1.53, 1.53)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

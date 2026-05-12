@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bly161o1rfe1c"
+path="res://.godot/imported/塞壬唱片-MSR; 秋田真典 - ......已至。.mp3-bc8c5fd92507cbb854b62736158c46b7.mp3str"
+
+[deps]
+
+source_file="res://assets/BGM/塞壬唱片-MSR; 秋田真典 - ......已至。.mp3"
+dest_files=["res://.godot/imported/塞壬唱片-MSR; 秋田真典 - ......已至。.mp3-bc8c5fd92507cbb854b62736158c46b7.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

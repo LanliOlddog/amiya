@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://egpt2w1rpyer"
+path="res://.godot/imported/上海アリス幻樂団 - 紅楼　～ Eastern Dream....mp3-946f0c3396b71f72a590d19228d7ff24.mp3str"
+
+[deps]
+
+source_file="res://assets/BGM/上海アリス幻樂団 - 紅楼　～ Eastern Dream....mp3"
+dest_files=["res://.godot/imported/上海アリス幻樂団 - 紅楼　～ Eastern Dream....mp3-946f0c3396b71f72a590d19228d7ff24.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

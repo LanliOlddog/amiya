@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=3 uid="uid://ch1x71j7mam2r"]
+
+[ext_resource type="Script" uid="uid://br3so0fgg4vys" path="res://src/boss/boss.gd" id="1_87qf7"]
+[ext_resource type="Script" uid="uid://cs0v453dbjpmj" path="res://src/boss/state_machine.gd" id="1_pi5od"]
+[ext_resource type="Script" uid="uid://cd0gp8vc14mtk" path="res://src/boss/state.gd" id="2_2drui"]
+[ext_resource type="Script" uid="uid://cscc6ibtiutg2" path="res://src/boss/launcher.gd" id="4_7wdf4"]
+[ext_resource type="Script" uid="uid://bnjxsy8i2yebu" path="res://src/boss/example_pattern.gd" id="5_mlwxe"]
+[ext_resource type="Script" uid="uid://dykkv4aeojou5" path="res://src/boss/spellcard_launcher.gd" id="6_f5340"]
+[ext_resource type="Script" uid="uid://biv0gswbqwpp2" path="res://src/boss/spellcard.gd" id="7_ka7n5"]
+[ext_resource type="Script" uid="uid://bu4dnmisj1f3p" path="res://src/patterns/Pattern.gd" id="8_m373w"]
+
+[node name="Boss" type="Area2D"]
+script = ExtResource("1_87qf7")
+
+[node name="canvas" type="Node2D" parent="."]
+
+[node name="sprite" type="AnimatedSprite2D" parent="canvas"]
+
+[node name="HurtBox" type="CollisionShape2D" parent="."]
+
+[node name="FSM" type="Node" parent="." node_paths=PackedStringArray("states")]
+script = ExtResource("1_pi5od")
+states = [NodePath("ExampleState")]
+
+[node name="ExampleState" type="Node" parent="FSM"]
+script = ExtResource("2_2drui")
+state_name = "example"
+
+[node name="Launcher" type="Node2D" parent="." node_paths=PackedStringArray("patterns", "FSM")]
+script = ExtResource("4_7wdf4")
+patterns = [NodePath("ExamplePattern")]
+FSM = NodePath("../FSM")
+
+[node name="ExamplePattern" type="Node2D" parent="Launcher"]
+script = ExtResource("5_mlwxe")
+bullet_type = "amiya_normal"
+
+[node name="SpellcardLauncher" type="Node2D" parent="." node_paths=PackedStringArray("spellcards")]
+script = ExtResource("6_f5340")
+spellcards = [NodePath("ExampleSpellcard")]
+
+[node name="ExampleSpellcard" type="Node2D" parent="SpellcardLauncher" node_paths=PackedStringArray("patterns")]
+script = ExtResource("7_ka7n5")
+patterns = [NodePath("ExamplePattern")]
+metadata/_custom_type_script = "uid://biv0gswbqwpp2"
+
+[node name="ExamplePattern" type="Node2D" parent="SpellcardLauncher/ExampleSpellcard"]
+script = ExtResource("8_m373w")
+metadata/_custom_type_script = "uid://bu4dnmisj1f3p"
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HPBar" type="TextureProgressBar" parent="UI"]
+offset_right = 4.0
+offset_bottom = 27.0
+max_value = 1.0
+step = 0.0
+value = 1.0
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

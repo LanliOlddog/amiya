@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=3 uid="uid://w8fllsv2ts76"]
+
+[ext_resource type="Script" uid="uid://c15t4vpm1o3ko" path="res://src/core/BulletManager/scripts/amiya_star.gd" id="1_814eh"]
+[ext_resource type="Texture2D" uid="uid://cwa5csxvdfalk" path="res://assets/bullets/star.png" id="2_noe27"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dl81w"]
+atlas = ExtResource("2_noe27")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tphtd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tphtd"]
+size = Vector2(0.8165618, 105.294815)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n77yg"]
+size = Vector2(144.36916, 1.074766)
+
+[node name="bigbullet" type="Area2D"]
+scale = Vector2(2.675, 2.675)
+script = ExtResource("1_814eh")
+final_speed = 10000
+accel_time = 10.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 4
+scale = Vector2(2.59, 2.59)
+texture = SubResource("AtlasTexture_dl81w")
+
+[node name="VersionShape" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(6.3551407, 232.52339)
+scale = Vector2(5.15, 5.15)
+rect = Rect2(-16.985756, -62.789227, 31.503494, 32.011616)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(1.515, 1.515)
+shape = SubResource("CircleShape2D_tphtd")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+position = Vector2(-5.9604645e-08, 9.719626)
+scale = Vector2(1.5149999, 1.5149999)
+shape = SubResource("RectangleShape2D_tphtd")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
+position = Vector2(-3.3644862, 0.7476636)
+shape = SubResource("RectangleShape2D_n77yg")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

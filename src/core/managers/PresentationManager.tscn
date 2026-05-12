@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bmd0fil3njes1"]
+
+[ext_resource type="Script" uid="uid://bidhuu4gdim1c" path="res://src/core/PresentationManager.gd" id="1_presentation_manager"]
+
+[node name="PresentationManager" type="CanvasLayer" unique_id=938945062]
+script = ExtResource("1_presentation_manager")

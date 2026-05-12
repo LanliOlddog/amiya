@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基于LDA的信用风险预测模型报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #334155; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid #e2e8f0; }
+        .step-connector { width: 2px; background-color: #cbd5e1; height: 100%; position: absolute; left: 1.25rem; top: 2rem; z-index: 0; }
+        .active-step .step-connector { background-color: #4f46e5; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #4f46e5; cursor: pointer; margin-top: -8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #cbd5e1; border-radius: 2px; }
+        .metric-card { transition: all 0.3s ease; }
+        .metric-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    </style>
+    <!-- Chosen Palette: Slate (Background), Indigo (Primary), Emerald/Rose (Semantic Status) - Minimalist & Professional -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: High-level executive summary and objective.
+         2. Concept Visualizer (Theory): Interactive scatter plot demonstrating the "Projection" and "Separation" core concept of LDA.
+         3. Workflow Explorer (Process): Vertical stepper to explain the pipeline (Preprocessing -> Training -> Cut-off), focusing on data handling.
+         4. Risk Simulator (Evaluation): The "Wow" factor. A fully interactive dashboard where users adjust the 'Risk Appetite' (Cut-off threshold) via a slider. This dynamically updates a Confusion Matrix and points on an ROC curve to visually teach the trade-off between Type I and Type II errors.
+         5. Strategic Analysis (Conclusion): Grid layout comparing Pros/Cons and future steps.
+         The structure moves from "What" -> "How (Theory)" -> "How (Practice)" -> "Simulation/Result" -> "Why/Conclusion".
+    -->
+    <!-- Visualization & Content Choices:
+         1. Theory Section: Used a Chart.js Scatter plot. Goal: Visualize class separation. Interaction: Toggle boundary line. Justification: LDA is geometric; seeing the separation is better than reading formulas.
+         2. Evaluation Section: Used Chart.js Line (ROC) and HTML Grid (Confusion Matrix). Goal: Teach model metrics. Interaction: Slider changes threshold, updating all numbers. Justification: Static matrices are boring; dynamic ones show the business impact of model tuning.
+         3. Workflow: HTML/CSS Stepper. Goal: Organize process steps. Interaction: Click to expand details. Justification: Linear processes need linear navigation.
+         Confirming NO SVG/Mermaid. 
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="text-slate-700">
+
+    <nav class="sticky top-0 z-50 glass-panel border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-indigo-700 tracking-tight">LDA CreditRisk</span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#overview" class="text-slate-500 hover:text-indigo-600 font-medium transition-colors">概览</a>
+                    <a href="#theory" class="text-slate-500 hover:text-indigo-600 font-medium transition-colors">原理解析</a>
+                    <a href="#process" class="text-slate-500 hover:text-indigo-600 font-medium transition-colors">建模流程</a>
+                    <a href="#simulation" class="text-slate-500 hover:text-indigo-600 font-medium transition-colors">风险模拟</a>
+                    <a href="#analysis" class="text-slate-500 hover:text-indigo-600 font-medium transition-colors">优劣势分析</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <section id="overview" class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold mb-4">金融风控核心技术</div>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
+                    基于线性判别分析(LDA)的<br>信用风险预测
+                </h1>
+                <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                    在金融借贷中，准确识别违约风险至关重要。本模型利用统计学经典的 <strong>LDA 方法</strong>，通过最大化“类间距离”并最小化“类内方差”，高效区分“守信客户”与“违约客户”。
+                </p>
+                <div class="flex gap-4">
+                    <button onclick="document.getElementById('simulation').scrollIntoView({behavior: 'smooth'})" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105">
+                        进入风险模拟器
+                    </button>
+                    <button onclick="document.getElementById('theory').scrollIntoView({behavior: 'smooth'})" class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold py-3 px-6 rounded-lg transition-all">
+                        了解核心原理
+                    </button>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-100">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">关键指标预览</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-xl text-center">
+                        <div class="text-sm text-slate-500 uppercase tracking-wider">AUC 目标</div>
+                        <div class="text-3xl font-bold text-indigo-600">> 0.7</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl text-center">
+                        <div class="text-sm text-slate-500 uppercase tracking-wider">KS 目标</div>
+                        <div class="text-3xl font-bold text-emerald-600">> 0.3</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl text-center">
+                        <div class="text-sm text-slate-500 uppercase tracking-wider">计算效率</div>
+                        <div class="text-3xl font-bold text-blue-600">极高</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl text-center">
+                        <div class="text-sm text-slate-500 uppercase tracking-wider">可解释性</div>
+                        <div class="text-3xl font-bold text-purple-600">强</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="theory" class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-8 md:p-12">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">LDA 核心原理：投影与分类</h2>
+                    <p class="text-slate-600 max-w-3xl">
+                        LDA 的核心在于找到一个最佳的投影方向（权重向量 $w$）。在此方向上，不同类别（违约/非违约）的数据中心距离最远（类间最大化），而同一类别的数据点最紧凑（类内最小化）。
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                            <div class="chart-container">
+                                <canvas id="theoryChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-center space-x-4">
+                            <button id="toggleProjectionBtn" class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors font-medium text-sm">
+                                切换：显示/隐藏 最佳投影线
+                            </button>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-indigo-50 p-5 rounded-xl border-l-4 border-indigo-500">
+                            <h4 class="font-bold text-indigo-900 mb-2">Fisher 判别准则</h4>
+                            <p class="text-sm text-indigo-800">
+                                我们追求的目标函数 $J(w)$ 最大化：
+                                <br><br>
+                                <code class="bg-white px-2 py-1 rounded text-xs font-mono">J(w) = (类间散度) / (类内散度)</code>
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-slate-800 mb-2">关键假设</h4>
+                            <ul class="text-sm text-slate-600 space-y-2 list-disc list-inside">
+                                <li>特征变量服从<strong>多元正态分布</strong>。</li>
+                                <li>各类别的<strong>协方差矩阵相同</strong>（同方差性）。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="process" class="max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">模型构建全流程</h2>
+                <p class="text-slate-500 mt-2">从原始数据到可部署的评分模型</p>
+            </div>
+
+            <div class="relative">
+                <!-- Step 1 -->
+                <div class="flex group pb-12 relative">
+                    <div class="step-connector"></div>
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold z-10 shadow-md ring-4 ring-white">1</div>
+                    <div class="ml-8 w-full">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-indigo-300 transition-all cursor-pointer" onclick="toggleStep('step1-detail')">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-xl font-bold text-slate-800">数据预处理 (Critical)</h3>
+                                <span class="text-indigo-600 text-sm font-medium">点击展开 &#9660;</span>
+                            </div>
+                            <p class="text-slate-600">LDA 对数据分布敏感，必须进行严格清洗与转换。</p>
+                            <div id="step1-detail" class="hidden mt-4 pt-4 border-t border-slate-100 grid md:grid-cols-2 gap-4">
+                                <div class="bg-slate-50 p-3 rounded">
+                                    <span class="font-bold text-xs uppercase text-slate-400 block mb-1">异常处理</span>
+                                    <p class="text-sm">使用 3-Sigma 或盖帽法处理极端收入/负债。</p>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded">
+                                    <span class="font-bold text-xs uppercase text-slate-400 block mb-1">特征变换</span>
+                                    <p class="text-sm">对数变换 ($\log$) 修正偏态；使用 <strong>WOE 转换</strong> 处理非线性关系。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex group pb-12 relative">
+                    <div class="step-connector"></div>
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold z-10 shadow-md ring-4 ring-white">2</div>
+                    <div class="ml-8 w-full">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-indigo-300 transition-all cursor-pointer" onclick="toggleStep('step2-detail')">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-xl font-bold text-slate-800">模型训练</h3>
+                                <span class="text-indigo-600 text-sm font-medium">点击展开 &#9660;</span>
+                            </div>
+                            <p class="text-slate-600">计算类均值向量与散度矩阵，求解最佳超平面。</p>
+                            <div id="step2-detail" class="hidden mt-4 pt-4 border-t border-slate-100">
+                                <p class="text-sm text-slate-600">
+                                    将数据分为训练集 (70%) 和测试集 (30%)。LDA 具有解析解，训练速度极快，无需复杂的超参数迭代。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex group relative">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold z-10 shadow-md ring-4 ring-white">3</div>
+                    <div class="ml-8 w-full">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-indigo-300 transition-all cursor-pointer" onclick="toggleStep('step3-detail')">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-xl font-bold text-slate-800">截断点选择 (Cut-off)</h3>
+                                <span class="text-indigo-600 text-sm font-medium">点击展开 &#9660;</span>
+                            </div>
+                            <p class="text-slate-600">根据业务风险偏好（Risk Appetite）确定违约判定阈值。</p>
+                            <div id="step3-detail" class="hidden mt-4 pt-4 border-t border-slate-100">
+                                <p class="text-sm text-slate-600 mb-2">决策策略示例：</p>
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div class="bg-rose-50 text-rose-700 px-2 py-1 rounded">保守策略：低阈值，宁可错杀，不可漏放。</div>
+                                    <div class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded">激进策略：高阈值，追求客户规模。</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="simulation" class="bg-slate-900 text-white rounded-3xl shadow-2xl overflow-hidden relative">
+            <!-- Background Decoration -->
+            <div class="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-indigo-600 rounded-full blur-3xl opacity-20"></div>
+            
+            <div class="p-8 md:p-12 relative z-10">
+                <div class="mb-10">
+                    <h2 class="text-3xl font-bold mb-2">风险策略模拟器</h2>
+                    <p class="text-slate-300">
+                        调整下方的 <strong>违约概率阈值 (Cut-off)</strong>，观察其对混淆矩阵（业务盈亏）及 ROC 曲线的影响。这是寻找最佳平衡点的关键步骤。
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-10">
+                    <!-- Controls & Confusion Matrix -->
+                    <div class="lg:col-span-5 space-y-8">
+                        
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                            <label class="block text-sm font-bold text-indigo-400 mb-4 flex justify-between">
+                                <span>阈值设定 (Risk Threshold)</span>
+                                <span id="thresholdValue" class="text-white">0.50</span>
+                            </label>
+                            <input type="range" id="thresholdSlider" min="0" max="1" step="0.01" value="0.5">
+                            <div class="flex justify-between text-xs text-slate-500 mt-2">
+                                <span>严格 (拒绝更多)</span>
+                                <span>宽松 (通过更多)</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">业务影响 (混淆矩阵)</h4>
+                            <div class="grid grid-cols-2 gap-2 text-center">
+                                <!-- TN -->
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-emerald-500/30">
+                                    <div class="text-xs text-slate-400 mb-1">正确预测守信 (TN)</div>
+                                    <div id="val-tn" class="text-2xl font-bold text-emerald-400">0</div>
+                                    <div class="text-xs text-emerald-500/70 mt-1">赚取利息</div>
+                                </div>
+                                <!-- FP -->
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-yellow-500/30">
+                                    <div class="text-xs text-slate-400 mb-1">误报 (FP) - Type I</div>
+                                    <div id="val-fp" class="text-2xl font-bold text-yellow-400">0</div>
+                                    <div class="text-xs text-yellow-500/70 mt-1">利息损失</div>
+                                </div>
+                                <!-- FN -->
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-rose-500/30">
+                                    <div class="text-xs text-slate-400 mb-1">漏报 (FN) - Type II</div>
+                                    <div id="val-fn" class="text-2xl font-bold text-rose-500">0</div>
+                                    <div class="text-xs text-rose-500/70 mt-1">本金损失 (高危)</div>
+                                </div>
+                                <!-- TP -->
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-indigo-500/30">
+                                    <div class="text-xs text-slate-400 mb-1">正确预测违约 (TP)</div>
+                                    <div id="val-tp" class="text-2xl font-bold text-indigo-400">0</div>
+                                    <div class="text-xs text-indigo-500/70 mt-1">成功避险</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <!-- ROC Chart -->
+                    <div class="lg:col-span-7">
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 h-full">
+                            <div class="chart-container">
+                                <canvas id="rocChart"></canvas>
+                            </div>
+                            <div class="mt-4 text-center">
+                                <p class="text-sm text-slate-400">
+                                    当前 AUC: <span class="font-bold text-white">0.86</span> (模拟数据)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="analysis" class="mb-20">
+            <h2 class="text-3xl font-bold text-slate-900 mb-8 text-center">综合评价与建议</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <!-- Pros -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-emerald-500">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="bg-emerald-100 text-emerald-600 w-8 h-8 rounded-full flex items-center justify-center mr-3">✓</span>
+                        LDA 模型优势
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-emerald-500 mr-2 mt-1">▪</span>
+                            <span class="text-slate-600"><strong>解释性强：</strong> 线性系数直接反映变量对风险的影响方向，符合监管对“白盒模型”的要求。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-emerald-500 mr-2 mt-1">▪</span>
+                            <span class="text-slate-600"><strong>无需调参：</strong> 基于矩阵解析解，计算迅速，适合作为基准模型 (Baseline)。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-emerald-500 mr-2 mt-1">▪</span>
+                            <span class="text-slate-600"><strong>小样本稳定：</strong> 在数据量较少且满足正态分布时，往往比 Logistic 回归更稳健。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Cons -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-rose-500">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="bg-rose-100 text-rose-600 w-8 h-8 rounded-full flex items-center justify-center mr-3">!</span>
+                        LDA 模型劣势
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-rose-500 mr-2 mt-1">▪</span>
+                            <span class="text-slate-600"><strong>线性限制：</strong> 难以捕捉复杂的非线性风险模式，需高度依赖 WOE 等特征工程。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-rose-500 mr-2 mt-1">▪</span>
+                            <span class="text-slate-600"><strong>分布敏感：</strong> 对异常值和非正态分布数据非常敏感，清洗工作量大。</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-indigo-50 rounded-xl p-8 border border-indigo-100 text-center">
+                <h3 class="text-xl font-bold text-indigo-900 mb-2">下一步建议</h3>
+                <p class="text-indigo-800 max-w-2xl mx-auto">
+                    建议尝试引入 <strong>QDA (二次判别分析)</strong> 放宽同方差假设，或将 LDA 输出的概率值作为特征输入到 <strong>XGBoost/LightGBM</strong> 等集成模型中进行 Stacking 融合，以提升最终预测效果。
+                </p>
+            </div>
+        </section>
+
+        <footer class="border-t border-slate-200 py-8 text-center text-slate-500 text-sm">
+            <p>© 2023 基于 LDA 的信用风险预测模型报告 | Interactive Report</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- 1. Theory Visualization (Scatter Plot) ---
+        // Generates mock data for 'Good' and 'Bad' customers
+        const generateData = (count, meanX, meanY, std) => {
+            const data = [];
+            for(let i=0; i<count; i++) {
+                data.push({
+                    x: meanX + (Math.random() - 0.5) * std,
+                    y: meanY + (Math.random() - 0.5) * std
+                });
+            }
+            return data;
+        };
+
+        const goodCustomers = generateData(50, 60, 60, 30); // Higher income, better history
+        const badCustomers = generateData(30, 30, 30, 25);  // Lower income, worse history
+
+        const ctxTheory = document.getElementById('theoryChart').getContext('2d');
+        const theoryChart = new Chart(ctxTheory, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: '守信客户 (Good)',
+                        data: goodCustomers,
+                        backgroundColor: 'rgba(16, 185, 129, 0.6)', // Emerald
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        pointRadius: 5
+                    },
+                    {
+                        label: '违约客户 (Bad)',
+                        data: badCustomers,
+                        backgroundColor: 'rgba(244, 63, 94, 0.6)', // Rose
+                        borderColor: 'rgba(244, 63, 94, 1)',
+                        pointRadius: 5
+                    },
+                    {
+                        label: '最佳投影线 (LDA Boundary)',
+                        data: [{x: 0, y: 0}, {x: 100, y: 100}],
+                        type: 'line',
+                        borderColor: 'rgba(79, 70, 229, 0.8)', // Indigo
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        pointRadius: 0,
+                        hidden: true // Hidden initially
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: '标准化收入 (Income)' }, grid: { display: false } },
+                    y: { title: { display: true, text: '信用评分 (Credit Score)' }, grid: { display: false } }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `${ctx.dataset.label}: (${ctx.raw.x.toFixed(1)}, ${ctx.raw.y.toFixed(1)})`
+                        }
+                    },
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // Toggle Projection Line Interaction
+        document.getElementById('toggleProjectionBtn').addEventListener('click', () => {
+            const isHidden = theoryChart.getDatasetMeta(2).hidden;
+            theoryChart.getDatasetMeta(2).hidden = (isHidden === null) ? !theoryChart.data.datasets[2].hidden : !isHidden;
+            theoryChart.update();
+        });
+
+        // --- 2. Workflow Interaction ---
+        window.toggleStep = function(id) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        };
+
+        // --- 3. Simulation (ROC & Confusion Matrix) ---
+        // Mock data logic for simulation
+        // Generate a distribution of probabilities for Good (0) and Bad (1) cases
+        // Good cases tend to have lower Default Probability, Bad have higher.
+        const numSamples = 1000;
+        const badRate = 0.2; // 200 Bad, 800 Good
+        const probabilities = [];
+        
+        // Simple simulation of model output scores
+        for(let i=0; i<numSamples; i++) {
+            const isBad = i < (numSamples * badRate);
+            // Bad users have higher scores (centered around 0.7), Good around 0.3
+            const score = isBad 
+                ? Math.min(0.99, Math.max(0.01, 0.65 + (Math.random() - 0.5) * 0.4))
+                : Math.min(0.99, Math.max(0.01, 0.35 + (Math.random() - 0.5) * 0.5));
+            probabilities.push({ isBad, score });
+        }
+
+        probabilities.sort((a, b) => a.score - b.score);
+
+        // Pre-calculate ROC points
+        const rocData = [];
+        for(let i=0; i<=100; i++) {
+            const thresh = i / 100;
+            let tp = 0, fp = 0, tn = 0, fn = 0;
+            probabilities.forEach(p => {
+                const predBad = p.score >= thresh;
+                if (predBad && p.isBad) tp++;
+                if (predBad && !p.isBad) fp++;
+                if (!predBad && !p.isBad) tn++;
+                if (!predBad && p.isBad) fn++;
+            });
+            const tpr = tp / (tp + fn); // Sensitivity
+            const fpr = fp / (fp + tn); // 1 - Specificity
+            rocData.push({ x: fpr, y: tpr, threshold: thresh });
+        }
+        // Reverse to draw line correctly from (0,0) to (1,1) usually requires sorted FPR
+        rocData.sort((a, b) => a.x - b.x);
+
+        const ctxRoc = document.getElementById('rocChart').getContext('2d');
+        const rocChart = new Chart(ctxRoc, {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        label: 'ROC Curve',
+                        data: rocData,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        fill: true
+                    },
+                    {
+                        label: 'Random Guess',
+                        data: [{x:0, y:0}, {x:1, y:1}],
+                        borderColor: '#94a3b8',
+                        borderDash: [5, 5],
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Current Cut-off',
+                        data: [], // Updated dynamically
+                        pointRadius: 8,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#f43f5e',
+                        pointBorderWidth: 3,
+                        type: 'scatter'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { type: 'linear', min: 0, max: 1, title: {display:true, text: 'False Positive Rate (误报率)', color:'#94a3b8'}, grid:{color:'#334155'} },
+                    y: { type: 'linear', min: 0, max: 1, title: {display:true, text: 'True Positive Rate (命中率)', color:'#94a3b8'}, grid:{color:'#334155'} }
+                },
+                plugins: {
+                    legend: { labels: { color: '#cbd5e1' } },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => {
+                                if(ctx.datasetIndex === 2) return `当前阈值点`;
+                                return `TPR: ${ctx.raw.y.toFixed(2)}, FPR: ${ctx.raw.x.toFixed(2)}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Logic to update simulation based on slider
+        const slider = document.getElementById('thresholdSlider');
+        const updateSimulation = () => {
+            const threshold = parseFloat(slider.value);
+            document.getElementById('thresholdValue').textContent = threshold.toFixed(2);
+
+            // 1. Calculate Matrix
+            let tp = 0, fp = 0, tn = 0, fn = 0;
+            probabilities.forEach(p => {
+                const predBad = p.score >= threshold;
+                if (predBad && p.isBad) tp++;
+                if (predBad && !p.isBad) fp++;
+                if (!predBad && !p.isBad) tn++;
+                if (!predBad && p.isBad) fn++;
+            });
+
+            // Animate numbers
+            document.getElementById('val-tp').textContent = tp;
+            document.getElementById('val-fp').textContent = fp;
+            document.getElementById('val-tn').textContent = tn;
+            document.getElementById('val-fn').textContent = fn;
+
+            // 2. Update Point on ROC
+            const tpr = tp / (tp + fn || 1);
+            const fpr = fp / (fp + tn || 1);
+            
+            rocChart.data.datasets[2].data = [{x: fpr, y: tpr}];
+            rocChart.update('none'); // 'none' for smooth animation
+        };
+
+        slider.addEventListener('input', updateSimulation);
+        
+        // Initialize
+        updateSimulation();
+
+    </script>
+</body>
+</html>

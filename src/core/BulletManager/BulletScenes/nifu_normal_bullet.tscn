@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://b8vxs5bu7s2e8"]
+
+[ext_resource type="Script" uid="uid://4rwtifeuutql" path="res://src/core/BulletManager/scripts/nifu_normal_bullet.gd" id="1_wpnij"]
+[ext_resource type="Texture2D" uid="uid://bhb84s4he7p0l" path="res://assets/bullets/nifu.png" id="2_3xed7"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_3xed7"]
+radius = 15.0
+height = 60.0
+
+[node name="NifuNormalBullet" type="Area2D"]
+modulate = Color(0.8, 0.8, 0.8, 1)
+position = Vector2(1, 0)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_wpnij")
+metadata/_custom_type_script = "uid://bpt1qormq7jq7"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_3xed7")
+
+[node name="VersionShape" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(4.445, 4.445)
+rect = Rect2(-7.4240713, -10, 14.848143, 20)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -8)
+shape = SubResource("CapsuleShape2D_3xed7")

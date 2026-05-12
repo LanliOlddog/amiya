@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://dafw12x8axhl3"]
+
+[ext_resource type="Script" uid="uid://csro7ec1y2r42" path="res://src/core/BulletManager/scripts/light_ball.gd" id="1_thujf"]
+[ext_resource type="Texture2D" uid="uid://b8s54w6wr2kcs" path="res://assets/bullets/light_dot.png" id="2_d28k0"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_o6cbl"]
+radius = 9.0
+
+[node name="RingBullet" type="Area2D"]
+rotation = 1.5707964
+scale = Vector2(1.485, 1.485)
+script = ExtResource("1_thujf")
+direction = Vector2(0, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(1.785, 1.785)
+texture = ExtResource("2_d28k0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.755, 0.755)
+shape = SubResource("CircleShape2D_o6cbl")
+
+[node name="VersionShape" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(1.695, 1.695)

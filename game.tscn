@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://chc5d44gbe8w3"]
+
+[ext_resource type="PackedScene" uid="uid://da5y4x3pauwlx" path="res://src/characters/amiya/amiya.tscn" id="1_80nbo"]
+[ext_resource type="Script" uid="uid://cxwmnkfht8orr" path="res://game.gd" id="1_e2o6t"]
+[ext_resource type="PackedScene" uid="uid://dmnwl2al7sjob" path="res://src/player/player.tscn" id="3_feb5d"]
+[ext_resource type="Texture2D" uid="uid://beqbs8vsalo72" path="res://assets/background.png" id="4_background"]
+[ext_resource type="Script" uid="uid://0w8mgwi1x8dc" path="res://src/core/DebugManagerUI.gd" id="5_debugui"]
+[ext_resource type="AudioStream" uid="uid://bly161o1rfe1c" path="res://assets/BGM/塞壬唱片-MSR; 秋田真典 - ......已至。.mp3" id="6_bgm_yizhi"]
+[ext_resource type="AudioStream" uid="uid://egpt2w1rpyer" path="res://assets/BGM/上海アリス幻樂団 - 紅楼　～ Eastern Dream....mp3" id="7_bgm_kourou"]
+
+[node name="Game" type="Node2D" unique_id=2108355010]
+script = ExtResource("1_e2o6t")
+
+[node name="BackgroundLayer" type="CanvasLayer" parent="." unique_id=470619817]
+layer = -1
+
+[node name="Background" type="Sprite2D" parent="BackgroundLayer" unique_id=252345081]
+position = Vector2(866.49994, 614.0001)
+scale = Vector2(1.8522848, 1.5705743)
+texture = ExtResource("4_background")
+
+[node name="DarkOverlay" type="ColorRect" parent="BackgroundLayer" unique_id=524011832]
+anchors_preset = -1
+anchor_right = 0.68
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.45)
+
+[node name="Amiya" parent="." unique_id=127466865 instance=ExtResource("1_80nbo")]
+position = Vector2(873.99994, 265.99994)
+scale = Vector2(0.5, 0.5)
+max_hp = 1000.0
+
+[node name="LevelManager" type="Node" parent="." unique_id=240840871]
+
+[node name="Player" parent="." unique_id=1015929140 instance=ExtResource("3_feb5d")]
+position = Vector2(865, 894)
+scale = Vector2(1.425, 1.425)
+
+[node name="DebugManagerUI" type="CanvasLayer" parent="." unique_id=1716511943]
+script = ExtResource("5_debugui")
+bgm_streams = Array[AudioStream]([ExtResource("6_bgm_yizhi"), ExtResource("7_bgm_kourou")])
+
+[node name="Panel" type="Control" parent="DebugManagerUI" unique_id=1149573815]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 180.0
+offset_top = 270.0
+offset_right = 500.0
+offset_bottom = 650.0
+
+[node name="BGM" type="OptionButton" parent="DebugManagerUI/Panel" unique_id=562112252]
+layout_mode = 0
+offset_right = 306.0
+offset_bottom = 86.0
+
+[node name="ChoseState" type="OptionButton" parent="DebugManagerUI/Panel" unique_id=2004487641]
+layout_mode = 0
+offset_top = 102.0
+offset_right = 306.0
+offset_bottom = 195.0
+allow_reselect = true
+
+[node name="Hurt" type="Button" parent="DebugManagerUI/Panel" unique_id=1799522773]
+layout_mode = 0
+offset_top = 212.0
+offset_right = 172.0
+offset_bottom = 243.0
+scale = Vector2(1.4, 1.4)
+text = "扣血"
+
+[node name="ChoseSkill" type="OptionButton" parent="DebugManagerUI/Panel" unique_id=1172919382]
+layout_mode = 0
+offset_top = 268.0
+offset_right = 306.0
+offset_bottom = 361.0
+
+[node name="PlayerLevel" type="OptionButton" parent="DebugManagerUI/Panel" unique_id=182196226]
+layout_mode = 0
+offset_top = 378.0
+offset_right = 306.0
+offset_bottom = 430.0
+
+[node name="SpellcardPresentation" type="Button" parent="DebugManagerUI/Panel" unique_id=675470130]
+layout_mode = 0
+offset_top = 446.0
+offset_right = 306.0
+offset_bottom = 498.0
+text = "播放符卡释放动画"
+
+[node name="DropType" type="OptionButton" parent="DebugManagerUI/Panel" unique_id=1360349694]
+layout_mode = 0
+offset_top = 514.0
+offset_right = 172.0
+offset_bottom = 566.0
+
+[node name="SpawnDrop" type="Button" parent="DebugManagerUI/Panel" unique_id=1493275057]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 514.0
+offset_right = 306.0
+offset_bottom = 566.0
+text = "生成掉落物"
+
+[node name="ToggleDebugControls" type="Button" parent="DebugManagerUI/Panel" unique_id=729901157]
+layout_mode = 0
+offset_left = 4.0
+offset_top = -63.0
+offset_right = 310.0
+offset_bottom = -11.0
+text = "隐藏调试控件"

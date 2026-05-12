@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BulletData" load_steps=3 format=3 uid="uid://wwfvtslgabgx"]
+
+[ext_resource type="PackedScene" uid="uid://dafw12x8axhl3" path="res://src/core/BulletManager/BulletScenes/light_ball.tscn" id="1_ejtn4"]
+[ext_resource type="Script" uid="uid://dofiqn2m2pf2l" path="res://src/resources/BulletData.gd" id="1_qn7e8"]
+
+[resource]
+script = ExtResource("1_qn7e8")
+name = "light_ball"
+scene = ExtResource("1_ejtn4")
+metadata/_custom_type_script = "uid://dofiqn2m2pf2l"

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BulletData" load_steps=3 format=3 uid="uid://csqe04r2g02ee"]
+
+[ext_resource type="Script" uid="uid://dofiqn2m2pf2l" path="res://src/resources/BulletData.gd" id="1_nmoal"]
+[ext_resource type="PackedScene" uid="uid://de8fuushj7hsf" path="res://src/core/BulletManager/BulletScenes/finalsound_bullet.tscn" id="1_qgbnn"]
+
+[resource]
+script = ExtResource("1_nmoal")
+name = "finalsound_bullet"
+scene = ExtResource("1_qgbnn")
+metadata/_custom_type_script = "uid://dofiqn2m2pf2l"

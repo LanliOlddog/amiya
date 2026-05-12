@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://sn0dlv70pscx"]
+
+[ext_resource type="Script" uid="uid://cty42vu53c64t" path="res://src/core/BulletManager/scripts/amiya_ball.gd" id="1_cxlvu"]
+[ext_resource type="Texture2D" uid="uid://ct03rhld2ov6e" path="res://assets/bullets/Special_03.png" id="2_cxlvu"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7s4qf"]
+
+[node name="Ball" type="Area2D"]
+scale = Vector2(0.3, 0.3)
+script = ExtResource("1_cxlvu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2.37, 2.37)
+texture = ExtResource("2_cxlvu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(6.08, 6.08)
+shape = SubResource("CircleShape2D_7s4qf")
+
+[node name="VersionShape" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(11.94, 11.94)
+
+[connection signal="screen_exited" from="VersionShape" to="." method="_on_version_shape_screen_exited"]

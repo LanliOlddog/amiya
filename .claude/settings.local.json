@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv core/AudioManager.gd src/core/)",
+      "Bash(mv core/AudioManager.tscn src/core/)",
+      "Bash(mv core/GameManager.gd src/core/)",
+      "Bash(mv core/UIManager.gd src/core/)",
+      "Bash(mv core/UIManager.tscn src/core/)",
+      "Bash(mv core/BulletManager/BulletManager.tscn src/core/BulletManager/)",
+      "Bash(mv core/BulletManager/BulletDatas/* src/core/BulletManager/BulletDatas/)",
+      "Bash(mv core/BulletManager/BulletScenes/* src/core/BulletManager/BulletScenes/)",
+      "Bash(mv core/BulletManager/scripts/* src/core/BulletManager/scripts/)",
+      "Bash(mv characters/amiya/* src/characters/amiya/)",
+      "Bash(mv characters/finalsound/* src/characters/finalsound/)",
+      "Bash(mv characters/Enemy/* src/characters/enemy/)",
+      "Bash(mv characters/wingmans/* src/characters/wingmans/)",
+      "Bash(mv data/patterns/Pattern.gd src/patterns/)",
+      "Bash(mv data/patterns/CombinePattern.gd src/patterns/)",
+      "Bash(mv data/patterns/normal_attack/* src/patterns/normal_attack/)",
+      "Bash(mv data/resources/* src/resources/)",
+      "Bash(mv codextes/*.gd src/characters/amiya/patterns/)",
+      "Bash(mv codextes/README.md src/characters/amiya/patterns/)",
+      "Bash(mv core/AudioManager.gd.uid src/core/)",
+      "Bash(mv core/GameManager.gd.uid src/core/)",
+      "Bash(mv core/UIManager.gd.uid src/core/)",
+      "Bash(mv data/patterns/CombinePattern.gd.uid src/patterns/)",
+      "Bash(mv data/patterns/Pattern.gd.uid src/patterns/)"
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+[gd_scene load_steps=12 format=3 uid="uid://big043kt7wjs8"]
+
+[ext_resource type="Script" uid="uid://2gcfftyu328c" path="res://src/core/BulletManager/scripts/BulletManager_AutoLoad.gd" id="1_wquq6"]
+[ext_resource type="Resource" uid="uid://bqsy2jatvyjmx" path="res://src/core/BulletManager/BulletDatas/amiya_accel_bullet.tres" id="2_tdmq2"]
+[ext_resource type="Resource" uid="uid://ctt4l4450ywcv" path="res://src/core/BulletManager/BulletDatas/amiya_normal_bullet.tres" id="3_nsr4y"]
+[ext_resource type="Resource" uid="uid://dlfvr84oqgkxx" path="res://src/core/BulletManager/BulletDatas/amiya_ball.tres" id="4_xlemn"]
+[ext_resource type="Resource" uid="uid://bstudu5ta8pwf" path="res://src/core/BulletManager/BulletDatas/amiya_lazer.tres" id="5_xlemn"]
+[ext_resource type="Resource" uid="uid://dlu5bhw7vvqfw" path="res://src/core/BulletManager/BulletDatas/amiya_missile.tres" id="6_xlemn"]
+[ext_resource type="Resource" uid="uid://lymjx3oyqu75" path="res://src/core/BulletManager/BulletDatas/amiya_star.tres" id="7_qyhba"]
+[ext_resource type="Resource" uid="uid://csqe04r2g02ee" path="res://src/core/BulletManager/BulletDatas/finalsound_bullet.tres" id="8_6wmmj"]
+[ext_resource type="Resource" uid="uid://wwfvtslgabgx" path="res://src/core/BulletManager/BulletDatas/light_ball.tres" id="9_7sbrx"]
+[ext_resource type="Resource" uid="uid://dhhmjutmg42ui" path="res://src/core/BulletManager/BulletDatas/player_normal.tres" id="10_xk7f5"]
+[ext_resource type="Resource" uid="uid://bwggrk8yq55n4" path="res://src/core/BulletManager/BulletDatas/wingman_bullet.tres" id="11_vuvsi"]
+
+[node name="BulletManager" type="Node2D"]
+script = ExtResource("1_wquq6")
+enemy_bullet_datas = Array[Resource]([ExtResource("2_tdmq2"), ExtResource("4_xlemn"), ExtResource("5_xlemn"), ExtResource("6_xlemn"), ExtResource("3_nsr4y"), ExtResource("7_qyhba"), ExtResource("8_6wmmj"), ExtResource("9_7sbrx")])
+player_bullet_datas = Array[Resource]([ExtResource("10_xk7f5"), ExtResource("11_vuvsi")])
+
+[node name="BulletPool" type="Node" parent="."]
+
+[node name="EnemyBulletPool" type="Node" parent="BulletPool"]
+
+[node name="PlayerBulletPool" type="Node" parent="BulletPool"]
+
+[node name="BossBulletPool" type="Node" parent="BulletPool"]

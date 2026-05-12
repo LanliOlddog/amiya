@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://dujtvs0uts7ly"]
+
+[ext_resource type="Script" uid="uid://cea126bqtvl7w" path="res://src/core/BulletManager/scripts/amiya_lazer.gd" id="1_dwsjd"]
+[ext_resource type="Texture2D" uid="uid://bf7w8o8c3x6lg" path="res://assets/bullets/lazer.png" id="2_0gpwx"]
+[ext_resource type="AudioStream" uid="uid://cy5i27mo3jok3" path="res://assets/sounds/lazer.wav" id="3_u3alq"]
+[ext_resource type="AudioStream" uid="uid://db57x5l08iri2" path="res://assets/sounds/warnning.wav" id="4_1sgrw"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_c0gun"]
+radius = 12.0
+height = 1158.0
+
+[node name="rollingLazer" type="Area2D"]
+script = ExtResource("1_dwsjd")
+
+[node name="warnning" type="Sprite2D" parent="."]
+modulate = Color(2.623471, 0.85126454, 0.84130836, 1)
+self_modulate = Color(18.892157, 0, 0, 0.68235296)
+position = Vector2(7.2, 0)
+scale = Vector2(0.19375001, 121.212)
+texture = ExtResource("2_0gpwx")
+
+[node name="shooting" type="Sprite2D" parent="."]
+modulate = Color(2.623471, 0.85126454, 0.84130836, 1)
+self_modulate = Color(0, 10.473577, 18.588419, 0.682)
+scale = Vector2(1e-05, 303.03)
+texture = ExtResource("2_0gpwx")
+
+[node name="hurtbox" type="CollisionShape2D" parent="."]
+position = Vector2(-1.0000005, 1.1920929e-07)
+scale = Vector2(1.04, 7)
+shape = SubResource("CapsuleShape2D_c0gun")
+
+[node name="LazerShooting" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_u3alq")
+volume_db = -18.503
+
+[node name="warnningSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_1sgrw")
+volume_db = -18.503

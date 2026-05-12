@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://c7bqrjomvkne7"]
+
+[ext_resource type="Script" uid="uid://dto0d074kihtc" path="res://src/core/UIManager.gd" id="1_6ljsl"]
+[ext_resource type="Texture2D" uid="uid://ch45nym2enl8m" path="res://assets/scoreboard.png" id="2_dbh53"]
+
+[node name="UIManager" type="Control" unique_id=1818393258]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_6ljsl")
+metadata/_edit_horizontal_guides_ = [1056.0, 1382.0]
+metadata/_edit_vertical_guides_ = [1897.0, 2405.0]
+
+[node name="RightPanel" type="ColorRect" parent="." unique_id=1407689900]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.68
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.9607843)
+
+[node name="Sprite2D" type="Sprite2D" parent="RightPanel" unique_id=563112208]
+position = Vector2(397.23117, 729.00006)
+scale = Vector2(1.1927142, 0.97147036)
+texture = ExtResource("2_dbh53")
+
+[node name="Info" type="VBoxContainer" parent="RightPanel" unique_id=1030292102]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 181.19995
+offset_top = 235.0
+offset_right = -157.0
+offset_bottom = -735.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 26
+
+[node name="StageScoreLabel" type="Label" parent="RightPanel/Info" unique_id=1471348353]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "STAGE SCORE  0000000000"
+
+[node name="TotalScoreLabel" type="Label" parent="RightPanel/Info" unique_id=806076108]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "TOTAL SCORE  0000000000"
+
+[node name="LivesLabel" type="Label" parent="RightPanel/Info" unique_id=803212186]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "LIFE         3"
+
+[node name="BombsLabel" type="Label" parent="RightPanel/Info" unique_id=7593330]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "BOMB         3"
+
+[node name="PowerLabel" type="Label" parent="RightPanel/Info" unique_id=815540702]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "HOPE       0.00"
+
+[node name="LogoBlock" type="Control" parent="RightPanel" unique_id=1743650633]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 54.19995
+offset_top = -321.0
+offset_right = -53.80005
+offset_bottom = -195.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Logo" type="Label" parent="RightPanel/LogoBlock" unique_id=964146804]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 44
+text = "阿米娅
+炉芯终曲"
+horizontal_alignment = 1
+vertical_alignment = 1

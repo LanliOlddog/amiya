@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://de8fuushj7hsf"]
+
+[ext_resource type="Script" uid="uid://cby44i5gvsdc3" path="res://src/core/BulletManager/scripts/finalsound_bullet.gd" id="1_y2lxc"]
+[ext_resource type="Texture2D" uid="uid://ce3m511vlxeo8" path="res://assets/bullets/ray.png" id="2_2lfjj"]
+
+[node name="finalsoundBullet" type="Area2D"]
+scale = Vector2(0.39, 0.39)
+script = ExtResource("1_y2lxc")
+final_speed = 2000
+metadata/_edit_vertical_guides_ = [-43.0, 41.0]
+metadata/_edit_horizontal_guides_ = [-96.0, 102.0]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 1.5707964
+texture = ExtResource("2_2lfjj")
+
+[node name="hitbox" type="CollisionPolygon2D" parent="."]
+position = Vector2(1, -1)
+polygon = PackedVector2Array(-1, -73, 33, -2, -2, 87, -35, -4)
+
+[node name="VersionShape" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(4.045, 4.045)
+rect = Rect2(-10, -22.820196, 20, 46.90818)
+
+[connection signal="screen_exited" from="VersionShape" to="." method="_on_version_shape_screen_exited"]

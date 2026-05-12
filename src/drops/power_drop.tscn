@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://d1yv8f0jtt2he"]
+
+[ext_resource type="Script" uid="uid://deapx8n4wechf" path="res://src/drops/DropItem.gd" id="1_8p4i2"]
+[ext_resource type="Texture2D" uid="uid://dabs7dx6bwtqs" path="res://assets/drops/hope.png" id="2_1as5b"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4wvd8"]
+radius = 14.0
+
+[node name="PowerDrop" type="Area2D" unique_id=321730809]
+script = ExtResource("1_8p4i2")
+drop_type = &"power"
+fall_speed = 500.0
+attract_radius = 150.0
+attract_speed = 6000.0
+max_speed = 100000.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1224055947]
+modulate = Color(1, 1, 0, 1)
+scale = Vector2(0.37, 0.37)
+texture = ExtResource("2_1as5b")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=255722205]
+shape = SubResource("CircleShape2D_4wvd8")

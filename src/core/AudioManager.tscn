@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://8855lc643hvl"]
+
+[ext_resource type="Script" uid="uid://dacxxctu3vnp5" path="res://src/core/AudioManager.gd" id="1_vpsjr"]
+[ext_resource type="AudioStream" uid="uid://yx0e67dp6e3e" path="res://assets/sounds/dot_shoot.wav" id="2_vfk1n"]
+[ext_resource type="AudioStream" uid="uid://c0oon884ocb7d" path="res://assets/sounds/spellcard_activatived.wav" id="3_spellcard"]
+
+[node name="AudioManager" type="Node" unique_id=912704219 node_paths=PackedStringArray("musics")]
+script = ExtResource("1_vpsjr")
+musics = [NodePath("BGM/musicplayer1"), NodePath("BGM/musicplayer2")]
+
+[node name="BGM" type="Node" parent="." unique_id=648527819]
+
+[node name="musicplayer1" type="AudioStreamPlayer" parent="BGM" unique_id=2134113158]
+bus = &"BGM"
+
+[node name="musicplayer2" type="AudioStreamPlayer" parent="BGM" unique_id=693053815]
+bus = &"BGM"
+
+[node name="SFX" type="Node" parent="." unique_id=1418680255]
+
+[node name="amiya_shoot" type="AudioStreamPlayer" parent="SFX" unique_id=609213292]
+stream = ExtResource("2_vfk1n")
+volume_db = -28.131
+bus = &"SFX"
+
+[node name="spellcard_activatived" type="AudioStreamPlayer" parent="SFX" unique_id=1179677097]
+stream = ExtResource("3_spellcard")
+bus = &"SFX"

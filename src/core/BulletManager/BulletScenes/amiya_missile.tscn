@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://bvhbg2xfqknac"]
+
+[ext_resource type="Script" uid="uid://ccwlr8nt6k6uq" path="res://src/core/BulletManager/scripts/amiya_missile.gd" id="1_o8wni"]
+[ext_resource type="Texture2D" uid="uid://dtnpyy1yc0sx3" path="res://assets/bullets/tile_0010.png" id="2_ewirf"]
+[ext_resource type="Texture2D" uid="uid://cijvuegsf172t" path="res://assets/bullets/tile_0012.png" id="3_corrx"]
+[ext_resource type="AudioStream" uid="uid://cy5i27mo3jok3" path="res://assets/sounds/lazer.wav" id="4_60to0"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_14yh8"]
+radius = 12.0
+height = 2952.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_y5oxn"]
+radius = 22.0
+height = 74.0
+
+[node name="lazer" type="Area2D"]
+script = ExtResource("1_o8wni")
+
+[node name="warnning" type="Sprite2D" parent="."]
+modulate = Color(2.623471, 0.85126454, 0.84130836, 1)
+self_modulate = Color(18.892157, 0, 0, 0.68235296)
+rotation = -1.5707964
+scale = Vector2(1.65, 1000)
+texture = ExtResource("2_ewirf")
+
+[node name="hurtbox" type="CollisionShape2D" parent="."]
+rotation = -1.5707964
+shape = SubResource("CapsuleShape2D_14yh8")
+
+[node name="bomb" type="Area2D" parent="."]
+position = Vector2(-1511, 1)
+rotation = -1.5707964
+
+[node name="Sprite2D" type="Sprite2D" parent="bomb"]
+self_modulate = Color(1, 0.17254902, 0.2784314, 1)
+rotation = -3.1415925
+scale = Vector2(7.905, 7.905)
+texture = ExtResource("3_corrx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="bomb"]
+shape = SubResource("CapsuleShape2D_y5oxn")
+
+[node name="LazerShooting" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_60to0")
+volume_db = -18.503
