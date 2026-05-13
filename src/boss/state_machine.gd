@@ -53,3 +53,15 @@ func _on_amiya_boss_dead() -> void:
 
 func _on_tree_exiting():
 	DebugManager.unregister_boss_state_machine(self)
+
+
+func reset_phase():
+	if states.is_empty():
+		return
+	if current_state and current_state.has_method("exit"):
+		current_state.exit()
+	auto_change = true
+	current_state = states[0]
+	next_state = states[0]
+	state_time = 0.0
+	current_state.enter()

@@ -96,5 +96,15 @@ func debug_select_level(index: int):
 		delete_wingmans()
 
 
+func reset_firepower(new_level: int = 1):
+	level = max(1, new_level)
+	shoot_timer = 0.0
+	fan = PI / 6
+	if level == 3:
+		add_wingmans()
+	else:
+		delete_wingmans()
+
+
 func _on_tree_exiting():
 	DebugManager.unregister_player_launcher(self)
