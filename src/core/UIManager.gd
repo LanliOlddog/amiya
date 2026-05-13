@@ -1,5 +1,7 @@
 extends Control
 
+signal restart
+
 @export_group("右侧信息栏")
 @export var stage_score: int = 0
 @export var total_score: int = 0
@@ -12,10 +14,14 @@ extends Control
 @onready var lives_label: Label = $RightPanel/Info/LivesLabel
 @onready var bombs_label: Label = $RightPanel/Info/BombsLabel
 @onready var power_label: Label = $RightPanel/Info/PowerLabel
+@onready var game_over_overlay: Control = $GameOverOverlay
+@onready var restart_button: Button = $GameOverOverlay/Center/RestartButton
 
 
 func _ready() -> void:
 	refresh_status_panel()
+	hide_game_over()
+	restart_button.pressed.connect(_on_restart_button_pressed)
 
 
 func set_scores(new_stage_score: int, new_total_score: int):
@@ -50,3 +56,15 @@ func refresh_status_panel():
 	lives_label.text = "LIFE         %d" % lives
 	bombs_label.text = "BOMB         %d" % bombs
 	power_label.text = "HOPE        %.2f" % power
+
+
+func show_game_over():
+	game_over_overlay.visible = true
+
+
+func hide_game_over():
+	game_over_overlay.visible = false
+
+
+func _on_restart_button_pressed():
+	restart.emit()

@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://c2156rr8bl04n" path="res://assets/sprites/nifu/idle.png" id="1_4flbx"]
 [ext_resource type="Script" uid="uid://b7khyu36et1te" path="res://src/player/player.gd" id="1_i3pqv"]
 [ext_resource type="Script" uid="uid://dt4cottufx4lv" path="res://src/player/launcher.gd" id="2_onrkg"]
+[ext_resource type="Script" uid="uid://b387oa4nyb6q6" path="res://src/player/bomb.gd" id="3_bomb"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_onrkg"]
 atlas = ExtResource("1_4flbx")
@@ -2280,13 +2281,15 @@ animations = [{
 "speed": 60.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_4flbx"]
-radius = 7.28011
+[sub_resource type="CircleShape2D" id="CircleShape2D_244u8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hit_point"]
+radius = 5.0
 
 [node name="Player" type="CharacterBody2D" unique_id=112376532]
 script = ExtResource("1_i3pqv")
-low_speed = 200
-default_speed = 700
+low_speed = 300
+default_speed = 800
 
 [node name="sprite" type="AnimatedSprite2D" parent="." unique_id=1575038047]
 scale = Vector2(0.4, 0.4)
@@ -2295,10 +2298,20 @@ animation = &"idle"
 autoplay = "idle"
 frame_progress = 0.81657237
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=786855931]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1952251048]
+shape = SubResource("CircleShape2D_244u8")
+
+[node name="HitPoint" type="Area2D" parent="." unique_id=900285859]
+collision_layer = 2
+collision_mask = 17
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitPoint" unique_id=542505410]
 position = Vector2(0, 13)
-shape = SubResource("CircleShape2D_4flbx")
+shape = SubResource("CircleShape2D_hit_point")
 
 [node name="Launcher" type="Node2D" parent="." unique_id=1385607480]
 script = ExtResource("2_onrkg")
 bullet_speed = 2000.0
+
+[node name="Bomb" type="Node" parent="." unique_id=1477957672]
+script = ExtResource("3_bomb")

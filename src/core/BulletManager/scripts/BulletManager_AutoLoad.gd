@@ -73,8 +73,20 @@ func mark_bullet_active(b: Bullet):
 	while bullet_pools[pid].has(b):
 		bullet_pools[pid].erase(b)
 	
-func recycle(b:Bullet):
-	if not b.is_active:
+func recycle(b: Bullet):
+	if not is_instance_valid(b) or not b.is_active:
+		return
+	if Engine.is_in_physics_frame():
+		b.is_active = false
+		call_deferred("_finish_recycle", b, true)
+		return
+	_finish_recycle(b, false)
+
+
+func _finish_recycle(b: Bullet, was_marked_inactive: bool = false):
+	if not is_instance_valid(b):
+		return
+	if not was_marked_inactive and not b.is_active:
 		return
 	var pid = b.pool_name
 	if bullet_pools.has(pid):

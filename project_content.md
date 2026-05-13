@@ -314,6 +314,58 @@
   - `spellcard_announcement_sound`
 - 该变量可通过 `core/managers/PresentationManager.tscn` 在检查器中调整。
 
+## 玩家受击、Bomb 与 Game Over 记录
+
+- `player.tscn` 下新增了 `HitPoint` 判定点和 `Bomb` 子节点。
+- `player.gd` 现在集中处理玩家受击模块：
+  - `HitPoint.area_entered` 监听敌人和敌方子弹。
+  - 受击后先进入短暂 deathbomb 判定窗口，而不是立刻死亡。
+  - 若窗口内按下 `bomb` 输入（当前绑定 X 键），会调用 `Bomb.activate(true)`。
+  - Bomb 成功后会扣除 `UIManager.bombs`，刷新右侧 UI，清除敌方子弹，并取消本次死亡判定。
+  - 普通死亡会扣除 `UIManager.lives`，清除敌方子弹，隐藏玩家并关闭判定。
+  - life 仍大于 0 时，玩家会延迟复活到左侧游戏区域下方中央，并进入 3 秒无敌状态。
+- `src/player/bomb.gd` 当前是开发期 Bomb 节点脚本：
+  - `activate(is_deathbomb := false)` 检查 B 数。
+  - B 数不足时打印 `没有可用炸弹` 并返回 `false`。
+  - B 数足够时扣除 1 个 Bomb，刷新 UI，打印 `释放炸弹`，发出 `started` 信号。
+- `project.godot` 新增 `bomb` 输入动作，暂时绑定键盘 X。
+- 玩家复活位置不再使用整个 viewport 中心，而是使用左侧游戏区域宽度的中心点，避免复活到右侧 UI 信息栏。
+- 玩家 life 扣到 0 时会调用 `GameManager.game_over()`，不再进入复活流程。
+- `UIManager.tscn` 新增 `GameOverOverlay`：
+  - 显示 `GAME OVER` 字样。
+  - 包含 `RESTART` 按钮。
+  - 覆盖范围限制在左侧游戏区域。
+- `UIManager.gd` 新增 `restart` 信号，以及 `show_game_over()` / `hide_game_over()`。
+- `GameManager.gd` 新增开发期 Restart 流程：
+  - 重置游戏状态到 `PLAYING`。
+  - 重置 life、bomb、power。
+  - 清除敌方子弹。
+  - 停止当前符卡并重置符卡序列。
+  - 重置 Boss 血量和 Boss 状态机阶段。
+  - 重置玩家位置、死亡 / 无敌 / 被弹状态。
+  - 重置玩家火力等级。
+  - 调用 `LevelManager.reset_progress()` 重置当前关卡进度。
+- `BossStateMachine` 新增 `reset_phase()`，用于 Restart 时回到初始阶段。
+- `player/launcher.gd` 新增 `reset_firepower(new_level := 1)`，用于 Restart 时恢复默认火力等级。
+- `game.tscn` 的 `LevelManager` 节点现在挂载 `src/core/LevelManager.gd`。
+- `LevelManager.gd` 当前只保存轻量进度字段：
+  - `default_progress`
+  - `current_progress`
+  - `reset_progress()`
+  - `progress_reset` 信号
+
+## 子弹回收安全修正记录
+
+- 测试 Game Over 后 Restart 时观察到 Godot 报错：
+  - `Disabling a CollisionObject node during a physics callback is not allowed`
+- 原因是敌方子弹在 `bullet.gd::_on_area_entered()` 这种物理回调里直接调用 `BulletManager.recycle()`。
+- 旧的 `recycle()` 会立刻执行 `bullet_off()`，而 `bullet_off()` 会停用节点处理 / 碰撞相关状态，Godot 4 不允许在物理回调当帧这样做。
+- `BulletManager.recycle()` 现在改为：
+  - 不在 physics frame 时，照常立即完成回收。
+  - 在 physics frame 中时，先把子弹 `is_active` 设为 `false`，再用 `call_deferred("_finish_recycle", ...)` 延迟真正回收。
+  - `_finish_recycle()` 会做 `is_instance_valid()` 和重复回收保护。
+- 这样可以避免同一颗子弹在延迟回收前被重复放回对象池，也避免物理回调中直接禁用碰撞对象的报错。
+
 ## Autoload 场景壳迁移记录
 
 - 已新增 `core/managers/`，用于集中存放挂载单例脚本的场景。
@@ -344,15 +396,19 @@
 - `core/managers/DebugManager.tscn`
 - `core/managers/PresentationManager.tscn`
 - `core/GameManager.gd`
+- `core/LevelManager.gd`
 - `core/DropManager.gd`
 - `core/BulletManager/scripts/BulletManager_AutoLoad.gd`
+- `core/UIManager.gd`
 - `drops/DropItem.gd`
 - `patterns/Pattern.gd`
 - `characters/boss/state_machine.gd`
 - `characters/boss/launcher.gd`
 - `characters/boss/spellcard.gd`
 - `characters/amiya/amiya.tscn`
-- `launcher.gd`
+- `player/player.gd`
+- `player/launcher.gd`
+- `player/bomb.gd`
 - `characters/wingmans/wingman.gd`
 - `characters/wingmans/wingmans.tscn`
 

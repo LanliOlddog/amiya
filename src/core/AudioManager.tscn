@@ -25,4 +25,5 @@ bus = &"SFX"
 
 [node name="spellcard_activatived" type="AudioStreamPlayer" parent="SFX" unique_id=1179677097]
 stream = ExtResource("3_spellcard")
+volume_db = -3.225
 bus = &"SFX"

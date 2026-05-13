@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://0w8mgwi1x8dc" path="res://src/core/DebugManagerUI.gd" id="5_debugui"]
 [ext_resource type="AudioStream" uid="uid://bly161o1rfe1c" path="res://assets/BGM/塞壬唱片-MSR; 秋田真典 - ......已至。.mp3" id="6_bgm_yizhi"]
 [ext_resource type="AudioStream" uid="uid://egpt2w1rpyer" path="res://assets/BGM/上海アリス幻樂団 - 紅楼　～ Eastern Dream....mp3" id="7_bgm_kourou"]
+[ext_resource type="Script" path="res://src/core/LevelManager.gd" id="8_level_manager"]
 
 [node name="Game" type="Node2D" unique_id=2108355010]
 script = ExtResource("1_e2o6t")
@@ -15,8 +16,8 @@ script = ExtResource("1_e2o6t")
 layer = -1
 
 [node name="Background" type="Sprite2D" parent="BackgroundLayer" unique_id=252345081]
-position = Vector2(866.49994, 614.0001)
-scale = Vector2(1.8522848, 1.5705743)
+position = Vector2(865.5, 649.5001)
+scale = Vector2(1.8501595, 1.5281101)
 texture = ExtResource("4_background")
 
 [node name="DarkOverlay" type="ColorRect" parent="BackgroundLayer" unique_id=524011832]
@@ -34,6 +35,7 @@ scale = Vector2(0.5, 0.5)
 max_hp = 1000.0
 
 [node name="LevelManager" type="Node" parent="." unique_id=240840871]
+script = ExtResource("8_level_manager")
 
 [node name="Player" parent="." unique_id=1015929140 instance=ExtResource("3_feb5d")]
 position = Vector2(865, 894)
