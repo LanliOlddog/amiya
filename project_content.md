@@ -251,6 +251,7 @@
 - 右侧区域目前是深色信息栏，并预留了这些显示项：
   - `STAGE SCORE`
   - `TOTAL SCORE`
+  - `GRAZE SCORE`
   - `LIFE`
   - `BOMB`
   - `POWER`
@@ -258,8 +259,10 @@
 - `core/UIManager.gd` 现在继承 `Control`，并保留原有符卡立绘宣言接口 `spellcard_announcement()`。
 - `UIManager.gd` 新增了临时数据接口：
   - `set_scores(new_stage_score, new_total_score)`
+  - `set_graze_score(new_graze_score)`
   - `set_player_resources(new_lives, new_bombs, new_power)`
   - `add_score(amount)`
+  - `add_graze_score(amount)`
   - `add_power(amount)`
   - `refresh_status_panel()`
 - 当前已知分数字段：
@@ -366,6 +369,43 @@
   - `_finish_recycle()` 会做 `is_instance_valid()` 和重复回收保护。
 - 这样可以避免同一颗子弹在延迟回收前被重复放回对象池，也避免物理回调中直接禁用碰撞对象的报错。
 
+## 玩家擦弹记录
+
+- `player.tscn` 下新增 `GrazeArea` 节点，并配置了独立的擦弹范围 CollisionShape。
+- `GrazeArea` 当前碰撞配置为：
+  - `collision_layer = 2`
+  - `collision_mask = 16`
+- `player.gd` 已整理为按功能分块的结构：
+  - 移动 / 生存配置
+  - 节点引用
+  - 运行状态
+  - 信号
+  - 生命周期
+  - 移动 / 射击
+  - 受击 / Bomb
+  - 擦弹
+  - 死亡 / 复活 / 无敌
+  - Restart / 位置辅助
+- 擦弹判定写在 `player.gd` 中：
+  - `GrazeArea.area_entered` 连接到 `_on_graze_area_area_entered(area)`。
+  - 只接受 `enemybullets` group 的 Area2D。
+  - 玩家死亡、无敌、deathbomb 判定窗口中不会产生擦弹。
+  - 每次擦弹默认加 `graze_score_value = 10`。
+  - 擦弹成功后调用 `UIManager.add_graze_score(graze_score_value)`。
+  - 擦弹信号为 `player_grazed(bullet, score)`。
+- 同一颗子弹只会结算一次擦弹：
+  - 擦弹成功后给子弹设置 metadata：`player_grazed = true`。
+  - 再次进入 `GrazeArea` 时检测到该 metadata 就不会重复加分。
+- `Bullet.bullet_on()` 会在子弹从对象池重新激活时清除 `player_grazed` metadata。
+- `UIManager` 新增独立擦弹分：
+  - 字段：`graze_score`
+  - 接口：`set_graze_score(new_graze_score)`
+  - 接口：`add_graze_score(amount)`
+  - 显示节点：`RightPanel/Info/GrazeScoreLabel`
+- 擦弹分显示在 `TOTAL SCORE` 下一行，当前不计入 `TOTAL SCORE`。
+- `amiya_normal_bullet.tscn` 的普通敌弹场景在本轮也有场景侧调整，包括子弹缩放和 Godot 写入的 `unique_id`。
+- `characters/amiya/amiya.tscn` 中 `HurtBox.visible = false` 的场景属性行被移除，属于本轮一并提交的场景状态更新。
+
 ## Autoload 场景壳迁移记录
 
 - 已新增 `core/managers/`，用于集中存放挂载单例脚本的场景。
@@ -399,6 +439,7 @@
 - `core/LevelManager.gd`
 - `core/DropManager.gd`
 - `core/BulletManager/scripts/BulletManager_AutoLoad.gd`
+- `core/BulletManager/scripts/bullet.gd`
 - `core/UIManager.gd`
 - `drops/DropItem.gd`
 - `patterns/Pattern.gd`
@@ -407,6 +448,7 @@
 - `characters/boss/spellcard.gd`
 - `characters/amiya/amiya.tscn`
 - `player/player.gd`
+- `player/player.tscn`
 - `player/launcher.gd`
 - `player/bomb.gd`
 - `characters/wingmans/wingman.gd`
