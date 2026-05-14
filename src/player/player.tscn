@@ -2286,6 +2286,10 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_hit_point"]
 radius = 5.0
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_244u8"]
+radius = 28.0
+height = 96.0
+
 [node name="Player" type="CharacterBody2D" unique_id=112376532]
 script = ExtResource("1_i3pqv")
 low_speed = 300
@@ -2315,3 +2319,12 @@ bullet_speed = 2000.0
 
 [node name="Bomb" type="Node" parent="." unique_id=1477957672]
 script = ExtResource("3_bomb")
+
+[node name="GrazeArea" type="Area2D" parent="." unique_id=554456996]
+collision_layer = 2
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GrazeArea" unique_id=1376328971]
+position = Vector2(0, 8)
+shape = SubResource("CapsuleShape2D_244u8")
+debug_color = Color(0, 0.64048225, 0.35394135, 0.41960785)

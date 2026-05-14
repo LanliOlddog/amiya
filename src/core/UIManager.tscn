@@ -54,6 +54,11 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 34
 text = "TOTAL SCORE  0000000000"
 
+[node name="GrazeScoreLabel" type="Label" parent="RightPanel/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "GRAZE SCORE  0000000000"
+
 [node name="LivesLabel" type="Label" parent="RightPanel/Info" unique_id=803212186]
 layout_mode = 2
 theme_override_font_sizes/font_size = 34

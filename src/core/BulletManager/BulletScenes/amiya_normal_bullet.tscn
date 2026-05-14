@@ -1,26 +1,26 @@
-[gd_scene load_steps=4 format=3 uid="uid://bjutcyeqrssti"]
+[gd_scene format=3 uid="uid://bjutcyeqrssti"]
 
 [ext_resource type="Script" uid="uid://c0cac8paan4es" path="res://src/core/BulletManager/scripts/amiya_bullet.gd" id="1_fw86s"]
 [ext_resource type="Texture2D" uid="uid://doj508emwg7ho" path="res://assets/bullets/arrow.png" id="2_gb0c3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gb0c3"]
 
-[node name="enemybullet" type="Area2D"]
+[node name="enemybullet" type="Area2D" unique_id=488429969]
 z_index = -2
-scale = Vector2(0.4, 0.5)
+scale = Vector2(1.005, 1.256)
 collision_layer = 16
 collision_mask = 3
 script = ExtResource("1_fw86s")
 
-[node name="arrow" type="Sprite2D" parent="."]
+[node name="arrow" type="Sprite2D" parent="." unique_id=1146202600]
 scale = Vector2(0.525, -0.4)
 texture = ExtResource("2_gb0c3")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1970403450]
 scale = Vector2(1.06, 1.06)
 shape = SubResource("CircleShape2D_gb0c3")
 
-[node name="VersionShape" type="VisibleOnScreenNotifier2D" parent="."]
+[node name="VersionShape" type="VisibleOnScreenNotifier2D" parent="." unique_id=1688683863]
 scale = Vector2(2.07, 2.07)
 rect = Rect2(-8.695652, -10, 17.874397, 20)
 

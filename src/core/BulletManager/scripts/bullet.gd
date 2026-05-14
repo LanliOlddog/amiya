@@ -50,6 +50,8 @@ func rolling(delta):
 ##从对象池激活子弹，设定位置，打开可见，设置进程
 func bullet_on(pos:Vector2):
 	kill_active_tweens()
+	if has_meta(&"player_grazed"):
+		remove_meta(&"player_grazed")
 	is_active = true
 	if BulletManager and BulletManager.has_method("mark_bullet_active"):
 		BulletManager.mark_bullet_active(self)

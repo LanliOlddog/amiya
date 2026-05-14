@@ -1,5 +1,6 @@
 extends CharacterBody2D
 
+# --- 移动 / 生存配置 ---
 @export var low_speed = 400
 @export var default_speed = 1000
 @export var respawn_delay: float = 0.8
@@ -7,18 +8,23 @@ extends CharacterBody2D
 @export var respawn_bottom_margin: float = 140.0
 @export var game_area_width_ratio: float = 0.68
 @export var deathbomb_window: float = 0.18
+@export var graze_score_value: int = 10
 
+# --- 节点引用 ---
 @onready var launcher: Node2D = $Launcher
 @onready var bomb: Node = $Bomb
 @onready var collision_shape: CollisionShape2D = $HitPoint/CollisionShape2D
 @onready var hit_point: Area2D = $HitPoint
+@onready var graze_area: Area2D = $GrazeArea
 
+# --- 运行状态 ---
 var speed = default_speed
 var is_dead := false
 var is_invincible := false
 var is_hit_pending := false
 var _hit_sequence_id := 0
 
+# --- 信号 ---
 signal player_hit()
 signal player_dead()
 signal player_respawned()
@@ -27,12 +33,17 @@ signal invincible_finished()
 signal player_hit_pending(duration: float)
 signal bomb_requested()
 signal deathbomb_used()
+signal player_grazed(bullet: Area2D, score: int)
 
+
+# --- 生命周期 ---
 func _ready() -> void:
 	add_to_group("player")
 	hit_point.add_to_group("player")
 	hit_point.add_to_group("plyer")
 	hit_point.area_entered.connect(_on_hit_point_area_entered)
+	graze_area.area_entered.connect(_on_graze_area_area_entered)
+
 
 func _physics_process(delta: float) -> void:
 	if is_dead:
@@ -41,22 +52,26 @@ func _physics_process(delta: float) -> void:
 		try_use_bomb(is_hit_pending)
 	move(delta)
 	shoot()
-	
+
+
+# --- 移动 / 射击 ---
 func move(delta: float) -> void:
 	if Input.is_action_pressed("concentrate"):
 		speed = low_speed
-		
 	else:
 		speed = default_speed
-	velocity.x = Input.get_axis("ui_left","ui_right") * speed * delta * 100
-	velocity.y = Input.get_axis("ui_up","ui_down") * speed * delta * 1.2 * 100
+
+	velocity.x = Input.get_axis("ui_left", "ui_right") * speed * delta * 100
+	velocity.y = Input.get_axis("ui_up", "ui_down") * speed * delta * 1.2 * 100
 	move_and_slide()
-	
+
+
 func shoot():
 	var is_pressing_shoot = Input.is_action_pressed("shoot")
 	launcher.update_firing(is_pressing_shoot)
 
 
+# --- 受击 / Bomb ---
 func _on_hit_point_area_entered(hit_object) -> void:
 	if hit_object.is_in_group("enemybullets") or hit_object.is_in_group("enemys") or hit_object is Enemy or hit_object is Boss:
 		_hurt()
@@ -104,6 +119,25 @@ func cancel_pending_hit() -> void:
 	set_hit_detection_enabled(true)
 
 
+# --- 擦弹 ---
+func _on_graze_area_area_entered(area: Area2D) -> void:
+	if not can_graze(area):
+		return
+
+	area.set_meta(&"player_grazed", true)
+	UIManager.add_graze_score(graze_score_value)
+	player_grazed.emit(area, graze_score_value)
+
+
+func can_graze(area: Area2D) -> bool:
+	if is_dead or is_invincible or is_hit_pending:
+		return false
+	if not is_instance_valid(area) or not area.is_in_group("enemybullets"):
+		return false
+	return not area.has_meta(&"player_grazed")
+
+
+# --- 死亡 / 复活 / 无敌 ---
 func die() -> void:
 	is_hit_pending = false
 	is_dead = true
@@ -149,6 +183,7 @@ func set_hit_detection_enabled(enabled: bool) -> void:
 		hit_point.set_deferred("monitorable", enabled)
 
 
+# --- Restart / 位置辅助 ---
 func get_respawn_position() -> Vector2:
 	var viewport_size := get_viewport_rect().size
 	var game_area_width := viewport_size.x * get_game_area_width_ratio()

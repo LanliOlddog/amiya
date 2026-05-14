@@ -4259,7 +4259,6 @@ libraries/ = SubResource("AnimationLibrary_cfdnw")
 autoplay = &"float"
 
 [node name="HurtBox" parent="." index="1"]
-visible = false
 position = Vector2(-1.1920929e-07, 9.536743e-07)
 scale = Vector2(-8.250521, 8.254645)
 shape = SubResource("CapsuleShape2D_2gpim")
